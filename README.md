@@ -117,6 +117,10 @@ run the provided generator:
 
 Replace model by the class name you plan to use for your Nested Set model.
 
+Alternatively, if you have an existing eloquent class, you can add a trait to it
+
+    php artisan baum:install-trait NAMESPACE\CLASS
+
 The generator will install a migration and a model file into your application
 configured to work with the Nested Set behaviour provided by Baum. You SHOULD
 take a look at those files, as each of them describes how they can be customized.
@@ -162,6 +166,16 @@ class Dictionary extends Baum\Node {
 ```
 
 Remember that, obviously, the column names must match those in the database table.
+
+Alternatively, you can use the NodeTrait in your existing Model class
+```
+class Dictionary extends Model {
+    use Baum\NodeTrait;
+
+}
+```
+Using the trait is equivalent to using the more complex example above.
+
 
 ### Migration configuration
 

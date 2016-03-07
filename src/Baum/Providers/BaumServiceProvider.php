@@ -3,8 +3,10 @@ namespace Baum\Providers;
 
 use Baum\Generators\MigrationGenerator;
 use Baum\Generators\ModelGenerator;
+use Baum\Generators\ModelTraitGenerator;
 use Baum\Console\BaumCommand;
 use Baum\Console\InstallCommand;
+use Baum\Console\InstallTraitCommand;
 use Illuminate\Support\ServiceProvider;
 
 class BaumServiceProvider extends ServiceProvider {
@@ -33,10 +35,11 @@ class BaumServiceProvider extends ServiceProvider {
   public function registerCommands() {
     $this->registerBaumCommand();
     $this->registerInstallCommand();
+    $this->registerInstallTraitCommand();
 
     // Resolve the commands with Artisan by attaching the event listener to Artisan's
     // startup. This allows us to use the commands from our terminal.
-    $this->commands('command.baum', 'command.baum.install');
+    $this->commands('command.baum', 'command.baum.install', 'command.baum.install-trait');
   }
 
   /**
@@ -65,12 +68,26 @@ class BaumServiceProvider extends ServiceProvider {
   }
 
   /**
+   * Register the 'baum:install-trait' command.
+   *
+   * @return void
+   */
+  protected function registerInstallTraitCommand() {
+    $this->app->singleton('command.baum.install-trait', function($app) {
+      $migrator = new MigrationGenerator($app['files']);
+      $modeler  = new ModelTraitGenerator($app['files']);
+
+      return new InstallTraitCommand($migrator, $modeler);
+    });
+  }
+
+  /**
    * Get the services provided by the provider.
    *
    * @return array
    */
   public function provides() {
-    return array('command.baum', 'command.baum.install');
+    return array('command.baum', 'command.baum.install', 'command.baum.install-trait');
   }
 
 }

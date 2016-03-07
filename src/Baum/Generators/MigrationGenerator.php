@@ -8,16 +8,23 @@ class MigrationGenerator extends Generator {
    *
    * @param  string  $name
    * @param  string  $path
+   * @param  boolean $isTrait
    * @return string
    */
-  public function create($name, $path) {
-    $path = $this->getPath($name, $path);
+  public function create($name, $path, $isTrait = false) {
 
-    $stub = $this->getStub('migration');
+    if ($isTrait) {
+      $stub = $this->getStub('migration-trait');
+      $name = basename(str_replace('\\','/', $name));
+    } else {
+      $stub = $this->getStub('migration');
+    }
+
+    $path = $this->getPath($name, $path, $isTrait);
 
     $this->files->put($path, $this->parseStub($stub, array(
       'table' => $this->tableize($name),
-      'class' => $this->getMigrationClassName($name)
+      'class' => $this->getMigrationClassName($name, $isTrait)
     )));
 
     return $path;
@@ -27,10 +34,15 @@ class MigrationGenerator extends Generator {
    * Get the migration name.
    *
    * @param string $name
+   * @param boolean $isTrait
    * @return string
    */
-  protected function getMigrationName($name) {
-    return 'create_' . $this->tableize($name) . '_table';
+  protected function getMigrationName($name, $isTrait) {
+    if ($isTrait) {
+      return 'add_nested_sets_to_' . $this->tableize($name) . '_table';
+    } else {
+      return 'create_' . $this->tableize($name) . '_table';
+    }
   }
 
   /**
@@ -38,8 +50,8 @@ class MigrationGenerator extends Generator {
    *
    * @param string $name
    */
-  protected function getMigrationClassName($name) {
-    return $this->classify($this->getMigrationName($name));
+  protected function getMigrationClassName($name, $isTrait) {
+    return $this->classify($this->getMigrationName($name, $isTrait));
   }
 
   /**
@@ -47,10 +59,11 @@ class MigrationGenerator extends Generator {
    *
    * @param  string  $name
    * @param  string  $path
+   * @param boolean $isTrait
    * @return string
    */
-  protected function getPath($name, $path) {
-    return $path . '/' . $this->getDatePrefix() . '_' . $this->getMigrationName($name) . '.php';
+  protected function getPath($name, $path, $isTrait) {
+    return $path . '/' . $this->getDatePrefix() . '_' . $this->getMigrationName($name, $isTrait) . '.php';
   }
 
   /**
