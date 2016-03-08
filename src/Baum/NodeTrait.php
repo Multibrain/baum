@@ -106,7 +106,7 @@ trait NodeTrait {
    *
    * @return void
    */
-  protected static function NodeTrait() {
+  protected static function bootNodeTrait() {
 
     static::creating(function($node) {
       $node->setDefaultLeftAndRight();
