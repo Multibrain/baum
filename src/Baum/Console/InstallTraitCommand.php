@@ -121,7 +121,7 @@ class InstallTraitCommand extends Command {
   protected function writeModel($name) {
       $output = pathinfo($this->modeler->addTrait($name, $this->fileLocation), PATHINFO_FILENAME);
 
-      $this->line("      <fg=green;options=bold>create</fg=green;options=bold>  $output");
+      $this->line("      <fg=green;options=bold>update</fg=green;options=bold>  $output");
   }
 
   /**
