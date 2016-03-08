@@ -2,6 +2,9 @@
 namespace Baum;
 
 use Baum\Extensions\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Baum\Extensions\Query\Builder as QueryBuilder;
 
 /**
  * Node
@@ -50,13 +53,6 @@ trait NodeTrait {
    * @var string
    */
   protected $orderColumn = null;
-
-  /**
-  * Guard NestedSet fields from mass-assignment.
-  *
-  * @var array
-  */
-  protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
 
   /**
    * Indicates whether we should move to a new parent.
