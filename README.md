@@ -127,6 +127,20 @@ take a look at those files, as each of them describes how they can be customized
 
 Next, you would probably run `artisan migrate` to apply the migration.
 
+If you are using the Trait and already have existing data, you need to seed the database with some values for ltf and rgt.
+For example, if you added the trait to class `Category`, the seeder will look like this:
+```
+        $categories = Category::orderBy('id', 'ASC')->get();
+
+        $loop = 1;
+        foreach($categories as $category) {
+            $category->lft = $loop;
+            $category->rgt = ++$loop;
+
+            $category->save();
+            $loop++;
+        }
+```
 ### Model configuration
 
 In order to work with Baum, you must ensure that your model class extends
