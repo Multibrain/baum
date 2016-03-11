@@ -183,7 +183,8 @@ class Move {
    * @return  \Baum\Node
    */
   protected function resolveNode($node) {
-    if ( $node instanceof \Baum\Node ) return $node->reload();
+    $traits = class_uses($node);
+    if ( in_array('Baum\\NodeTrait', $traits) || $node instanceof \Baum\Node ) return $node->reload();
 
     return $this->node->newNestedSetQuery()->find($node);
   }
